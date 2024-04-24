@@ -3,7 +3,7 @@ import json
 import jsonlines
 import sys
 import time
-import psycopg2
+# import psycopg2
 from dotenv import load_dotenv
 from sshtunnel import SSHTunnelForwarder
 import redis
@@ -20,12 +20,16 @@ class Data:
 
     def setup_database(self):
         self.log_queue = queue.Queue()
+        self.dbconn = None
+
         self.log_thread = threading.Thread(target=self.process_log_queue)
         self.log_thread.daemon = True 
         self.log_thread.start()
-        self.dbconn = None
+
+        # print(1)
         if os.environ.get("DB_HOST") is None:
             return
+
         db_settings = {
             "database_host": os.environ.get("DB_HOST"),
             "database_port": int(os.environ.get("DB_PORT")),
@@ -42,6 +46,7 @@ class Data:
             "ssh_user": os.environ.get("SSH_USER"),
             "ssh_private_key": os.environ.get("SSH_PRIVATE_KEY")
         }
+        self.dbconn = None
         if ssh_host:
             self.tunnel = SSHTunnelForwarder(
                 (ssh_settings["ssh_host"], ssh_settings["ssh_port"]),
@@ -58,6 +63,7 @@ class Data:
                 port=self.tunnel.local_bind_port,
                 database=db_settings["database_name"],
             )
+            self.dbcursor = self.dbconn.cursor()
         elif db_settings["database_host"]:
             self.dbconn = psycopg2.connect(
                 user=db_settings["database_username"],
@@ -66,8 +72,6 @@ class Data:
                 port=db_settings["database_port"],
             database=db_settings["database_name"],
         )
-        if self.dbconn:
-            self.dbcursor = self.dbconn.cursor()
 
     def process_log_queue(self):
         while True:
@@ -94,6 +98,7 @@ class Data:
                         time.sleep(retry_delay)
 
             # Write the log entry to the database
+            
             if self.dbconn and obj["step_type"] in ['talk', 'agent_set', 'move', 'matrix_set', 'agent_init']:
                 fields_to_skip = ["step", "substep", "step_type", "sim_id", "embedding"]
                 data = {k: v for k, v in obj.items() if k not in fields_to_skip}
@@ -118,5 +123,7 @@ class Data:
         obj["step"] = self.cur_step
         obj["substep"] = self.current_substep
         obj["sim_id"] = self.id # i think we will change this to sim id everywhere
+
+
         self.log_queue.put(obj)
         self.current_substep += 1
