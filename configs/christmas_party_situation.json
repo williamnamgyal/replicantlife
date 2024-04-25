@@ -9,7 +9,7 @@
       "connections": ["James", "Viktor", "Lily", "Paul"],
       "x": 32,
       "y": 11,
-      "spatial_memory": ["House B1", "Mall", "Park", "Town", "Bar"]
+      "spatial_memory": ["House B3", "Mall", "Park", "Town", "Bar"]
     },
     {
       "name": "James",
@@ -17,7 +17,7 @@
       "connections": ["Natasha", "Viktor", "Lily", "Paul"],
       "x": 33,
       "y": 11,
-      "spatial_memory": ["House B2", "Mall", "Park", "Town", "Bar"]
+      "spatial_memory": ["House B3", "Mall", "Park", "Town", "Bar"]
     },
     {
       "name": "Viktor",
@@ -33,7 +33,7 @@
       "connections": ["Natasha", "Viktor", "James", "Paul"],
       "x": 33,
       "y": 13,
-      "spatial_memory": ["House B4", "Mall", "Park", "Town", "Bar"]
+      "spatial_memory": ["House B3", "Mall", "Park", "Town", "Bar"]
     },
     {
       "name": "Paul",
@@ -41,7 +41,7 @@
       "connections": ["Natasha", "Viktor", "James", "Lily"],
       "x": 34,
       "y": 13,
-      "spatial_memory": ["House B2", "Mall", "Park", "Town", "Bar"]
+      "spatial_memory": ["House B3", "Mall", "Park", "Town", "Bar"]
     }
   ],
 
