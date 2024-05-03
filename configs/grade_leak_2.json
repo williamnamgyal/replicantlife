@@ -1,0 +1,64 @@
+{
+  "agents": [
+    {
+      "name": "Alice",
+      "description": "A studious and well-meaning student who accidentally came across the grade report and shared it, not realizing the consequences.",
+      "goal": "Seek forgiveness from peers and navigate the hostility from Bob.",
+      "x": 32,
+      "y": 11,
+      "actions": ["apologize", "explain"],
+      "relations": {
+        "Bob": "adversary"
+      }
+    },
+    {
+      "name": "Bob",
+      "description": "A student who feels deeply betrayed because his grades were part of the leak and sees Alice as an enemy.",
+      "goal": "Confront Alice aggressively and ensure such a breach of trust does not happen again.",
+      "x": 33,
+      "y": 11,
+      "actions": ["confront", "accuse", "demand action"],
+      "relations": {
+        "Alice": "enemy"
+      }
+    },
+    {
+      "name": "Carol",
+      "description": "A sympathetic friend who wants to help mediate the situation and restore peace despite the tension.",
+      "goal": "Help Alice and Bob reconcile and mitigate the hostility.",
+      "x": 34,
+      "y": 14,
+      "actions": ["mediate", "support", "counsel"]
+    },
+    {
+      "name": "Mr. Smith",
+      "description": "The principal who wants to handle the situation with discretion and maintain the school's integrity.",
+      "goal": "Investigate the leak thoroughly, implement measures to prevent future incidents, and maintain trust among students.",
+      "x": 34,
+      "y": 13,
+      "actions": ["investigate", "reassure", "mediate"]
+    }
+  ],
+  "performance": {
+    "numerator": "situations_resolved",
+    "denominator": "total_incidents"
+  },
+  "questions": [
+    {
+      "who": "all",
+      "question": "How has the grade leak affected your view on privacy and trust within the school?"
+    },
+    {
+      "who": "all",
+      "question": "What are the ethical implications of sharing someone's private information without their consent? How does it affect relationships within the school community, based on what you learned from the whole grade leak situation?"
+    },
+    {
+      "who": "all",
+      "question": "What measures can be implemented to prevent similar incidents in the future? Discuss any ideas you have for improving privacy and security at school."
+    },
+    {
+      "who": "all",
+      "question": "How has this incident impacted your personal feelings towards your peers and teachers? Has it changed how you view the school environment?"
+    }
+  ]
+}
