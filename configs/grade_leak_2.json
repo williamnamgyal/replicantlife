@@ -1,48 +1,52 @@
 {
+  "background": "This scenario involves four individuals: Alice, Bob, Carmen, and Mr. Smith. Alice, a student known for her curiosity and sociability, inadvertently comes across a confidential grade report. Without fully understanding the consequences, she shares it, leading to its spread within the school community. The report includes Bob's grades, which eventually reaches Bob's mother, Carmen, causing a rift between her and Bob due to his underperformance in school. Bob, feeling betrayed and humiliated, views Alice as an adversary responsible for the leak and the ensuing embarrassment. Mr. Smith, the school's principal, is tasked with handling the fallout of the leak, investigating its origins, and ensuring such breaches of trust are prevented in the future. The scenario explores themes of trust, privacy, and the consequences of unintended actions within the school setting. The whole argument and discussion between Alice and Bob, as well as all communications with Mr. Smith, all occur at the school. Bob and his mother, Carmen's discussion occurs at Bob's house.",
   "agents": [
     {
       "name": "Alice",
-      "description": "A studious and well-meaning student who accidentally came across the grade report and shared it, not realizing the consequences.",
-      "goal": "Seek forgiveness from peers and navigate the hostility from Bob.",
+      "description": "A studious and well-meaning student who accidentally came across the grade report and shared it because she is a gossiper, not realizing the consequences. She spread Bob's grade report and it eventually got to Bob's mom, which made Bob very angry at her. Alice is a very defensive person, always arguing back.",
+      "goal": "Explain and argue with Bob and try to de-escalate the situation.",
       "x": 32,
       "y": 11,
-      "actions": ["apologize", "explain"],
-      "relations": {
-        "Bob": "adversary"
-      }
+      "actions": ["argue", "explain"],
+      "connections": ["Mr. Smith", "Bob", "Carmen"]
     },
     {
       "name": "Bob",
-      "description": "A student who feels deeply betrayed because his grades were part of the leak and sees Alice as an enemy.",
-      "goal": "Confront Alice aggressively and ensure such a breach of trust does not happen again.",
+      "description": "A student who feels deeply betrayed because his grades were part of the leak and sees Alice as an enemy, having strong hatred for her because she leaked his grades to his mom.",
+      "goal": "Confront Alice aggressively and ensure such a breach of trust does not happen again, and actively try to escalate the situation.",
       "x": 33,
       "y": 11,
       "actions": ["confront", "accuse", "demand action"],
-      "relations": {
-        "Alice": "enemy"
-      }
+      "connections": ["Alice", "Mr. Smith", "Carmen"]
     },
     {
-      "name": "Carol",
-      "description": "A sympathetic friend who wants to help mediate the situation and restore peace despite the tension.",
-      "goal": "Help Alice and Bob reconcile and mitigate the hostility.",
+      "name": "Carmen",
+      "description": "Bob's mother who received the leaked grade report accidentally. She is outraged by the academic performance and the breach of privacy. Her anger reflects deeper anxieties about Bob's future.",
+      "goal": "Scold at Bob for having bad grades after it was leaked.",
       "x": 34,
       "y": 14,
-      "actions": ["mediate", "support", "counsel"]
+      "actions": ["scold", "yell"],
+      "connections": ["Alice", "Bob", "Mr. Smith"]
     },
     {
       "name": "Mr. Smith",
-      "description": "The principal who wants to handle the situation with discretion and maintain the school's integrity.",
+      "description": "The principal who wants to handle the situation with discretion and maintain the school's integrity. Bob reports Alice to the Mr. Smith. Mr. Smith is located at the school.",
       "goal": "Investigate the leak thoroughly, implement measures to prevent future incidents, and maintain trust among students.",
       "x": 34,
       "y": 13,
-      "actions": ["investigate", "reassure", "mediate"]
+      "actions": ["investigate", "reassure", "mediate"],
+      "connections": ["Alice", "Bob", "Carmen"]
     }
   ],
+  "location": {
+    "name": "School",
+      "description": "The school is where. Mr. Smith is the principal of this school."
+  },
   "performance": {
     "numerator": "situations_resolved",
     "denominator": "total_incidents"
   },
+  "model" : "gpt-3.5-turbo",
   "questions": [
     {
       "who": "all",

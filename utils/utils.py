@@ -76,7 +76,7 @@ class Llm:
         self.model = model
         self.urls = url.split(",")
         #self.url = url
-        self.openai_api_key = key
+        self.openai_api_key = OPENAI_KEY
         self.call_counter = 0
         self.call_times = []
         self.vllm = None
@@ -87,32 +87,21 @@ class Llm:
         #    self.generate("41+1=?")
 
     def generate(self, prompt, fallback="Llm Error"):
-        # Truncate more than 1400 words
-        #lines = prompt.splitlines()
-        #truncated_lines = []
-
-        #total_words = 0
-        #for line in lines:
-        #    words = line.split()
-        #    if total_words + len(words) <= 1400:
-        #        truncated_lines.append(line)
-        #        total_words += len(words)
-        #    else:
-        #        remaining_words = 1400 - total_words
-        #        truncated_words = words[:remaining_words]
-        #        truncated_line = ' '.join(truncated_words)
-        #        truncated_lines.append(truncated_line)
-        #        break
+        #runs here
 
         #prompt = '\n'.join(truncated_lines)
-        if self.model == "off":
+        if self.model == "off" or self.model=="OFF":
+            #doesn't run
             return fallback
         start_time = time.time()
         if self.model in SUPPORTED_GPT_MODELS:
+          #runs here
           data = {
             "model": self.model,
             "messages": [{"role": "user", "content": prompt}]}
 
+        #   print("open_ai_key "*30)
+        #   print(self.openai_api_key)
           headers = {
               "Authorization": f"Bearer {self.openai_api_key}",
               "Content-Type": "application/json"
@@ -120,77 +109,95 @@ class Llm:
 
           response = requests.post(f"https://api.openai.com/v1/chat/completions", json=data, headers=headers)
 
+        #   print("response status code "*30)
+        #   print(response.status_code)
+          # is response.status_code=401, then its invalid api key
           if response.status_code == 200:
               msg = response.json()['choices'][0]['message']['content']
               self.call_counter += 1
+              print("msg:" *20)
+              print(msg)
+
+              end_time = time.time()
+              self.log_calls(prompt, msg, end_time - start_time)
+              self.call_times.append(end_time - start_time)
+              if len(self.urls) > 1:
+                pd(f"current url {current_url}")
+              pd(f"INPUT:\n {prompt}")
+              pd(f"OUTPUT:\n {msg}")
+              print(f"LLM CALL: {prompt[:30]}")
+              print(f"runtime: {end_time - start_time}")
           else:
               pd(response.text)
               msg = fallback
+              print("----fallback----"*40)
+              print(fallback)
 
-        elif self.model in VLLM_MODELS:
-          if self.vllm is None:
-              self.vllm = LLM(model=self.model)
-              self.sampling_params = SamplingParams(max_tokens=10000)
-          try:
-              outputs = self.vllm.generate(prompt, self.sampling_params)
-              msg = ""
-              for output in outputs:
-                  cur_out = output.outputs
-                  for o in cur_out:
-                    msg = msg + o.text
 
-          except Exception as e:
-              print(e)
-              msg = fallback
-        elif re.findall(r'groq',self.model):
-            #groq,groq_model = self.model.split("_")
-            client = Groq( api_key=os.environ.get("GROQ_API_KEY"),)
-            chat_completion = client.chat.completions.create(
-                    messages=[ { "role": "user", "content": prompt, } ],
-                    model="mixtral-8x7b-32768",)
-            msg = chat_completion.choices[0].message.content
-        else:
-          data = {
-              "model": self.model,
-              "prompt": prompt,
-              "stream": False
-          }
-          #"temperature": 0.4,
-          #print(data)
-          current_url = self.urls[self.call_counter % len(self.urls)]
-          try:
-              if self.model == "powerinf":
-                  data = {
-                      "prompt": prompt,
-                      "n_predict": 128
-                  }
-                  response = requests.post(f"{POWERINF_URL}/completion", json=data, timeout=LLAMA_TIMEOUT)
-                  if response.status_code == 200:
-                      msg = response.json()['content']
-                      self.call_counter += 1
-                  else:
-                      msg = fallback
-              else:
-                  response = requests.post(f"{current_url}/generate", json=data, timeout=LLAMA_TIMEOUT)
+        
 
-                  if response.status_code == 200:
-                      msg = response.json()['response']
-                      self.call_counter += 1
-                  else:
-                      msg = fallback + ": " + response.text
+        # elif self.model in VLLM_MODELS:
+        #   if self.vllm is None:
+        #       self.vllm = LLM(model=self.model)
+        #       self.sampling_params = SamplingParams(max_tokens=10000)
+        #   try:
+        #       outputs = self.vllm.generate(prompt, self.sampling_params)
+        #       msg = ""
+        #       for output in outputs:
+        #           cur_out = output.outputs
+        #           for o in cur_out:
+        #             msg = msg + o.text
 
-          except Exception as e:
-              msg = fallback
+        #   except Exception as e:
+        #       print(e)
+        #       msg = fallback
+        # elif re.findall(r'groq',self.model):
+        #     #groq,groq_model = self.model.split("_")
+        #     client = Groq( api_key=os.environ.get("GROQ_API_KEY"),)
+        #     chat_completion = client.chat.completions.create(
+        #             messages=[ { "role": "user", "content": prompt, } ],
+        #             model="mixtral-8x7b-32768",)
+        #     msg = chat_completion.choices[0].message.content
+        # else:
+        #   data = {
+        #       "model": self.model,
+        #       "prompt": prompt,
+        #       "stream": False
+        #   }
+        #   current_url = self.urls[self.call_counter % len(self.urls)]
+        #   try:
+        #       if self.model == "powerinf":
+        #           data = {
+        #               "prompt": prompt,
+        #               "n_predict": 128
+        #           }
+        #           response = requests.post(f"{POWERINF_URL}/completion", json=data, timeout=LLAMA_TIMEOUT)
+        #           if response.status_code == 200:
+        #               msg = response.json()['content']
+        #               self.call_counter += 1
+        #           else:
+        #               msg = fallback
+        #       else:
+        #           response = requests.post(f"{current_url}/generate", json=data, timeout=LLAMA_TIMEOUT)
 
-        end_time = time.time()
-        self.log_calls(prompt, msg, end_time - start_time)
-        self.call_times.append(end_time - start_time)
-        if len(self.urls) > 1:
-            pd(f"current url {current_url}")
-        pd(f"INPUT:\n {prompt}")
-        pd(f"OUTPUT:\n {msg}")
-        print(f"LLM CALL: {prompt[:30]}")
-        print(f"runtime: {end_time - start_time}")
+        #           if response.status_code == 200:
+        #               msg = response.json()['response']
+        #               self.call_counter += 1
+        #           else:
+        #               msg = fallback + ": " + response.text
+
+        #   except Exception as e:
+        #       msg = fallback
+
+        # end_time = time.time()
+        # self.log_calls(prompt, msg, end_time - start_time)
+        # self.call_times.append(end_time - start_time)
+        # if len(self.urls) > 1:
+        #     pd(f"current url {current_url}")
+        # pd(f"INPUT:\n {prompt}")
+        # pd(f"OUTPUT:\n {msg}")
+        # print(f"LLM CALL: {prompt[:30]}")
+        # print(f"runtime: {end_time - start_time}")
 
         return msg
 
@@ -215,25 +222,6 @@ class Llm:
 
           if response.status_code == 200:
               msg = response.json()['data'][0]['embedding']
-              self.call_counter += 1
-          else:
-              msg = fallback
-        else:
-          data = {
-              "model": self.model,
-              "prompt": prompt,
-          }
-          current_url = self.urls[self.call_counter % len(self.urls)]
-          if self.model == "powerinf":
-            data = {
-                "content": prompt
-            }
-            response = requests.post(f"{POWERINF_URL}/embedding", json=data)
-          else:
-            response = requests.post(f"{current_url}/embeddings", json=data)
-
-          if response.status_code == 200:
-              msg = response.json()['embedding']
               self.call_counter += 1
           else:
               msg = fallback

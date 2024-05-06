@@ -12,7 +12,7 @@ REDIS_URL = os.getenv("REDIS_URL", default="redis://localhost:6379") #default re
 OPENAI_KEY = os.getenv("OPENAI_KEY")
 MODEL = os.getenv("MODEL", default="mistral")
 MATRIX_SIZE = int(os.getenv("MATRIX_SIZE", default="15"))
-SIMULATION_STEPS = int(os.getenv("SIMULATION_STEPS", default="0"))
+SIMULATION_STEPS = int(os.getenv("SIMULATION_STEPS", default="500"))
 RUN_REPORTS = int(os.getenv("RUN_REPORTS", default="1"))
 PERCEPTION_RANGE = int(os.getenv("PERCEPTION_RANGE", default="5"))
 NUM_AGENTS = int(os.getenv("NUM_AGENTS", default="0"))

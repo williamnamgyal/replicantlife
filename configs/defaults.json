@@ -6,7 +6,7 @@
   "OPENAI_KEY": null,
   "MODEL": "mistral",
   "MATRIX_SIZE": 15,
-  "SIMULATION_STEPS": 0,
+  "SIMULATION_STEPS": 500,
   "RUN_REPORTS": 1,
   "PERCEPTION_RANGE": 5,
   "NUM_AGENTS": 0,

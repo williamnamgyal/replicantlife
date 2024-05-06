@@ -95,6 +95,7 @@ class Agent:
 And {self}'s recent memories:
 {relevant_memories_string}
 Write out what my new goal should be in a short sentence given recent memories.
+Make sure it is a creative decision that advances the situation and doesn't make it repetitive.
 The goal should be something a real human would follow.
 Take into account what happened recently to help you focus as your goal may need to change given circumstances.
 Write in the first person from the point of view of {self}.
